@@ -9,17 +9,17 @@ const ReactSelect = dynamic(() => import("react-select"), {
 const DataLoad = () => {
   const [currencyType, setCurrencyType] = React.useState("usd"); //selected currency type
   const currencyList = useCurrencyProvider(); //object of key:abbreviation, name: string
-  const [currencyTypes, setCurrencyTypes] = React.useState<any>({}); //object> object of key:abbreviation, relative price: number //currencyTypes
-  const [selectedType, setSelectedType] = React.useState(['usd', "US Dollar"])
-  React.useEffect(() => {    
+  const [currencyPrices, setCurrencyPrices] = React.useState<any>({}); //object> object of key:abbreviation, relative price: number //currencyTypes
+  const [selectedType, setSelectedType] = React.useState(["usd", "US Dollar"]);
+  React.useEffect(() => {
     try {
-        fetch(
-          `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${currencyType}.json`
-        )
-          .then((res) => res.json())
-          .then((data) => setCurrencyTypes(data));
+      fetch(
+        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${currencyType}.json`
+      )
+        .then((res) => res.json())
+        .then((data) => setCurrencyPrices(data));
     } catch (error) {
-        console.error(error)
+      console.error(error);
     }
   }, [currencyType]);
 
@@ -29,28 +29,30 @@ const DataLoad = () => {
     name: currencyList.currencyDefinitions[key],
   }));
 
-  const handleChange = (selectedType: any) =>{
+  const handleChange = (selectedType: any) => {
     setSelectedType(selectedType);
-    setCurrencyType(selectedType['id'])
-  }
-//   console.log(Object.keys(currencyTypes[currencyType]));
-//   console.log(Object.keys(selectedType))
+    setCurrencyType(selectedType["id"]);
+  };
 
-// console.log(currencyTypes)
-// console.log(currencyType)
-// console.log(selectedType['id'])
-let displayPrices;
-if (currencyTypes[currencyType] != null) {
-    displayPrices = Object.keys(currencyTypes[currencyType]).map(
+  let displayPrices;
+  if (currencyPrices[currencyType] != null) {
+    displayPrices = Object.keys(currencyPrices[currencyType]).map(
       (key: string | number) => {
         return (
-          //@ts-ignore
-          <div key={key}>
-            <p>{key} {currencyTypes[currencyType][key]}</p>
-          </div>
-        );})}
-    //@ts-ignore
-  
+          <tbody key={key}>
+            <tr className="hover:bg-cyan-500 cursor-default">
+              {/* @ts-ignore */}
+              <td>{currencyList.currencyDefinitions[key]} </td>
+              <td className="font-bold w-[20rem]">{key}</td>
+              <td className="number">{currencyPrices[currencyType][key]}</td>
+            </tr>
+            <tr className="border-b border-white"></tr>
+          </tbody>
+        );
+      }
+    );
+  }
+
   return (
     <div>
       <ReactSelect
@@ -62,11 +64,28 @@ if (currencyTypes[currencyType] != null) {
         getOptionLabel={(options) => options["name"]}
         //@ts-ignore
         getOptionValue={(options) => options["id"]}
-        className="dark:text-black mx-5"
+        className="dark:text-black mb-6 font-bold w-1/2 mx-auto text-xl"
         value={selectedType}
         onChange={handleChange}
       />
-      {displayPrices}
+      <h2 className="text-3xl font-bold text-center mb-6">
+        {/* @ts-ignore */}
+        1 {currencyList.currencyDefinitions[currencyType]} is
+        worth:
+      </h2>
+      <table className="w-[800px] text-center mx-auto">
+        <thead className="underline text-xl">
+          <tr>
+            <th>Name</th>
+            <th>Abbreviation</th>
+            <th>Exchange Rate</th>
+          </tr>
+          <tr className="h-5">
+            <td colSpan={3}></td>
+          </tr>
+        </thead>
+        {displayPrices}
+      </table>
     </div>
   );
 };

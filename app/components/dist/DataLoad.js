@@ -10,13 +10,13 @@ var ReactSelect = dynamic_1["default"](function () { return Promise.resolve().th
 var DataLoad = function () {
     var _a = react_1["default"].useState("usd"), currencyType = _a[0], setCurrencyType = _a[1]; //selected currency type
     var currencyList = Context_1.useCurrencyProvider(); //object of key:abbreviation, name: string
-    var _b = react_1["default"].useState({}), currencyTypes = _b[0], setCurrencyTypes = _b[1]; //object> object of key:abbreviation, relative price: number //currencyTypes
+    var _b = react_1["default"].useState({}), currencyPrices = _b[0], setCurrencyPrices = _b[1]; //object> object of key:abbreviation, relative price: number //currencyTypes
     var _c = react_1["default"].useState(['usd', "US Dollar"]), selectedType = _c[0], setSelectedType = _c[1];
     react_1["default"].useEffect(function () {
         try {
             fetch("https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/" + currencyType + ".json")
                 .then(function (res) { return res.json(); })
-                .then(function (data) { return setCurrencyTypes(data); });
+                .then(function (data) { return setCurrencyPrices(data); });
         }
         catch (error) {
             console.error(error);
@@ -38,14 +38,14 @@ var DataLoad = function () {
     // console.log(selectedType['id'])
     var displayPrices;
     if (currencyTypes[currencyType] != null) {
-        displayPrices = Object.keys(currencyTypes[currencyType]).map(function (key) {
+        displayPrices = Object.keys(currencyPrices[currencyType]).map(function (key) {
             return (
             //@ts-ignore
             react_1["default"].createElement("div", { key: key },
                 react_1["default"].createElement("p", null,
                     key,
                     " ",
-                    currencyTypes[currencyType][key])));
+                    currencyPrices[currencyType][key])));
         });
     }
     //@ts-ignore
