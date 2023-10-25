@@ -28,7 +28,7 @@ const ThemeToggle = () => {
   //   get from local storage
 
   return (
-    <div>
+    <div className="mr-6">
       <button onClick={changeTheme}>
         {theme === "light" ? (
           <FaMoon size={30} />

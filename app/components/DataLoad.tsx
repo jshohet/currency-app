@@ -46,7 +46,7 @@ const DataLoad = () => {
               <td className="font-bold w-[20rem]">{key}</td>
               <td className="number">{currencyPrices[currencyType][key]}</td>
             </tr>
-            <tr className="border-b border-white"></tr>
+            <tr className="border-b dark:border-zinc-500 border-slate-400"></tr>
           </tbody>
         );
       }
@@ -65,10 +65,10 @@ const DataLoad = () => {
         //@ts-ignore
         getOptionValue={(options) => options["id"]}
         className="dark:text-black mb-6 font-bold w-1/2 mx-auto text-xl"
-        value={selectedType}
+        value={selectedType[1]}
         onChange={handleChange}
       />
-      <h2 className="text-3xl font-bold text-center mb-6">
+      <h2 className="text-3xl font-bold text-center mb-6" >
         {/* @ts-ignore */}
         1 {currencyList.currencyDefinitions[currencyType]} is
         worth:
