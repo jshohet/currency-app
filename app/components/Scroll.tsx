@@ -1,12 +1,10 @@
 "use client";
 import React from "react";
 import { isVisible } from "./ScrollHelper";
-import { FaArrowDown } from "@react-icons/all-files/fa/FaArrowDown";
 import { FaArrowUp } from "@react-icons/all-files/fa/FaArrowUp";
 
 export default function ScrollHelper() {
   const ref = React.useRef<HTMLDivElement>(null);
-  const ref2 = React.useRef<HTMLDivElement>(null);
   const isShown = isVisible(ref);
   
  

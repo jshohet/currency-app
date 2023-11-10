@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import ThemeProvider from './components/ThemeProvider'
-import CurrencyProvider from './components/Context';
 
 
 export const metadata: Metadata = {
@@ -23,7 +22,7 @@ export default function RootLayout({
     <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
       <body>
         <ThemeProvider>
-          <CurrencyProvider>{children}</CurrencyProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>
