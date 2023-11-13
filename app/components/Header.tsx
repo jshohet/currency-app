@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <div className="flex mt-4 h-20 justify-between items-center align-center" id="top">
       <BsCreditCard size={30} className="rotate-45 ml-6"/>
-      <h1 className='text-2xl font-bold'>Currency Lookup</h1>
+      <h1 className='text-2xl font-bold'>Exchange Global</h1>
         <ThemeToggle />
     </div>
   )

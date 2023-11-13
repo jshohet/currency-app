@@ -65,9 +65,9 @@ const DataLoad = () => {
           <tr className="hover:bg-cyan-500 cursor-default">
             {/* @ts-ignore */}
             <td>{currencyDefinitions[key]} </td>
-            <td className="font-bold w-[20rem]">{key}</td>
+            <td className="font-bold w-[]">{key}</td>
             <td className="number">
-              {qty * currencyPrices[currencyType][key]}
+              {(qty * currencyPrices[currencyType][key]).toFixed(4)}
             </td>
           </tr>
           <tr className="border-b dark:border-zinc-500 border-slate-400"></tr>
@@ -79,8 +79,8 @@ const DataLoad = () => {
         <tbody key={key}>
           <tr className="hover:bg-cyan-500 cursor-default">
             {/* @ts-ignore */}
-            <td>{currencyDefinitions[key]} </td>
-            <td className="font-bold w-[20rem]">{key}</td>
+            <td className="">{currencyDefinitions[key]} </td>
+            <td className="font-bold">{key}</td>
             <td className="number">
               {qty * currencyPrices[currencyType][key]}
             </td>
@@ -123,7 +123,7 @@ const DataLoad = () => {
 
 
   return (
-    <div>
+    <div className="">
       <ReactSelect
         isSearchable={true}
         options={options}
@@ -133,7 +133,7 @@ const DataLoad = () => {
         getOptionLabel={(options) => options["name"]}
         //@ts-ignore
         getOptionValue={(options) => options["id"]}
-        className="dark:text-black mb-6 font-bold w-96 mx-auto text-xl"
+        className="dark:text-black mb-6 font-bold w-80 mx-auto text-xl"
         value={selectedType[1]}
         onChange={handleDropdownChange}
       />
@@ -148,12 +148,13 @@ const DataLoad = () => {
         />
       </div>
       <div className="dark:text-white mb-6 font-bold text-xl flex flex-row justify-center">
-        <label htmlFor="findCurrencyInput">Find a specific currency: </label>
+        <label htmlFor="findCurrencyInput">Find a currency: </label>
         <input
           id="findCurrencyInput"
           value={currencySearch}
           name="searchCurrencyType"
           onChange={handleSearch}
+          placeholder="abbrev. only"
           className="w-40 ml-2 text-center dark:bg-white dark:text-slate-800 rounded-sm"
         />
       </div>
@@ -161,13 +162,13 @@ const DataLoad = () => {
         {/* @ts-ignore */}
         {qty} {currencyDefinitions[currencyType]} is worth:
       </h2>
-      <table className="w-[800px] text-center mx-auto">
+      <table className="w-[250px] sm:w-[600px] md:w-[800px] lg:w-[900px] text-center mx-auto">
         <thead className="underline text-xl">
           <tr>
             <th>Name</th>
             <th
               onClick={sorting}
-              className="flex flex-row justify-center cursor-pointer">
+              className="flex flex-row justify-center items-center cursor-pointer mt-3 md:mt-0">
               Abbreviation{" "}
               {sort === "descending" ? (
                 <FaArrowUp size={15} className="mt-2 ml-1" />

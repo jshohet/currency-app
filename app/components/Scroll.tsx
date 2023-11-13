@@ -12,7 +12,7 @@ export default function ScrollHelper() {
   return (
     <div>
       <div ref={ref}></div>
-      <div className="fixed text-center ml-10 mt-52 text-zinc-300">
+      <div className="fixed text-center ml-2 mt-52 hidden sm:block md:ml-5 lg:ml-9 text-zinc-300">
         <div className="h-10">
           {!isShown && (
             <button
