@@ -10,3 +10,6 @@
 
 * Search by name
 * Sort by every column
+
+## Changelog
+4/8/2024 - added pagination, fixed the search bar, updated deprecated API and fetched them async

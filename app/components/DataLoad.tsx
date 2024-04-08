@@ -6,7 +6,8 @@ const ReactSelect = dynamic(() => import("react-select"), {
 });
 import { FaArrowUp } from "@react-icons/all-files/fa/FaArrowUp";
 import { FaArrowDown } from "@react-icons/all-files/fa/FaArrowDown";
-
+import axios from "axios";
+import { Pagination } from "@nextui-org/pagination";
 
 const DataLoad = () => {
   const [currencyType, setCurrencyType] = useState("usd"); //selected currency type
@@ -18,32 +19,62 @@ const DataLoad = () => {
   const [filtered, setFiltered] = useState<string[]>([]);
   const [sort, setSort] = useState<"ascending" | "descending">("descending");
 
-  useEffect(() => {
-    try {
-      fetch(
-        "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.min.json"
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          setCurrencyDefinitions(data)
-        })
-    } catch (error) {
-      console.error(error);
-    }
-  }, []); 
-
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 25;
+  const lastIndex = currentPage * recordsPerPage;
+  const firstIndex = lastIndex - recordsPerPage;
+  const records = filtered.slice(firstIndex, lastIndex);
+  const npages = Math.ceil(filtered.length / recordsPerPage);
 
   useEffect(() => {
-    try {
-      fetch(
-        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${currencyType}.json`
-      )
-        .then((res) => res.json())
-        .then((data) => setCurrencyPrices(data));
-    } catch (error) {
-      console.error(error);
-    }
+    const loadCurrencyDefs = async () => {
+      const response = await axios.get(
+        "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.min.json"
+      );
+      setCurrencyDefinitions(response.data);
+    };
+    loadCurrencyDefs();
+  }, []);
+
+  useEffect(() => {
+    const loadFiltered = async () => {
+      const response = await axios.get(
+        `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${currencyType}.json`
+      );
+      setFiltered(Object.keys(response.data[currencyType]));
+    };
+    loadFiltered();
   }, [currencyType]);
+
+  useEffect(() => {
+    const loadCurrencyPrices = async () => {
+      const response = await axios.get(
+        `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${currencyType}.json`
+      );
+      setCurrencyPrices(response.data);
+    };
+    loadCurrencyPrices();
+  }, [currencyType]);
+
+  useEffect(() =>{
+    if(currencySearch.length === 0){
+      setFiltered(Object.keys(currencyDefinitions));
+    }
+    if (currencySearch.length > 0) {
+      setFiltered(
+        Object.keys(currencyDefinitions).filter((key) => {
+          return key.match(currencySearch);
+        })
+      );
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[currencySearch])
+
+  const handleSearch = (e: any) => {
+    e.preventDefault();
+    setCurrencySearch(e.target.value);    
+  };
 
   const options = Object.keys(currencyDefinitions).map((key) => ({
     id: key,
@@ -59,68 +90,55 @@ const DataLoad = () => {
   let displayPrices;
   if (currencyPrices[currencyType] != null) {
     if (filtered.length < 1) {
-      displayPrices = Object.keys(currencyDefinitions).map((key: string | number) => {
-      return (
-        <tbody key={key}>
-          <tr className="hover:bg-cyan-500 cursor-default">
-            {/* @ts-ignore */}
-            <td>{currencyDefinitions[key]} </td>
-            <td className="font-bold w-[]">{key}</td>
-            <td className="number">
-              {(qty * currencyPrices[currencyType][key]).toFixed(4)}
-            </td>
-          </tr>
-          <tr className="border-b dark:border-zinc-500 border-slate-400"></tr>
-        </tbody>
+      displayPrices = Object.keys(currencyDefinitions).map(
+        (key: string | number) => {
+          return (
+            <tbody key={key}>
+              <tr className="hover:bg-cyan-500 cursor-default">
+                {/* @ts-ignore */}
+                <td>{currencyDefinitions[key]} </td>
+                <td className="font-bold">{key}</td>
+                <td className="number">
+                  {(qty * currencyPrices[currencyType][key]).toFixed(4)}
+                </td>
+              </tr>
+              <tr className="border-b dark:border-zinc-500 border-slate-400"></tr>
+            </tbody>
+          );
+        }
       );
-    })}else{
-      displayPrices = filtered.map((key: string | number) => {
-      return (
-        <tbody key={key}>
-          <tr className="hover:bg-cyan-500 cursor-default">
-            {/* @ts-ignore */}
-            <td className="">{currencyDefinitions[key]} </td>
-            <td className="font-bold">{key}</td>
-            <td className="number">
-              {qty * currencyPrices[currencyType][key]}
-            </td>
-          </tr>
-          <tr className="border-b dark:border-zinc-500 border-slate-400"></tr>
-        </tbody>
-      );
-    })
-    }}  
+    } else {
+      displayPrices = records.map((key: string | number) => {
+        return (
+          <tbody key={key}>
+            <tr className="hover:bg-cyan-500 cursor-default">
+              {/* @ts-ignore */}
+              <td className="">{currencyDefinitions[key]} </td>
+              <td className="font-bold">{key}</td>
+              <td className="number">
+                {qty * currencyPrices[currencyType][key]}
+              </td>
+            </tr>
+            <tr className="border-b dark:border-zinc-500 border-slate-400"></tr>
+          </tbody>
+        );
+      });
+    }
+  }
 
   function handleQty(e: any) {
     setQty(e.target.value);
-  }
+  }  
 
-
-  function handleSearch(e: any) {
-    setCurrencySearch(e.target.value);
-    if (currencySearch.length > 0) {
-      setFiltered(
-        Object.keys(currencyDefinitions).filter((key) => {
-          return (
-            key.match(currencySearch)
-          )
-      })
-      );
-    } else {
-      setFiltered(Object.keys(currencyDefinitions));
-    }
-  }
-  
-  function sorting(){
+  function sorting() {
     if (sort === "ascending") {
-      filtered.sort();      
-      setSort("descending")
-    }else{
+      filtered.sort();
+      setSort("descending");
+    } else {
       filtered.sort().reverse();
-      setSort("ascending")
+      setSort("ascending");
     }
   }
-
 
   return (
     <div className="">
@@ -184,6 +202,25 @@ const DataLoad = () => {
         </thead>
         {displayPrices}
       </table>
+      <div className="flex flex-col items-center mt-3">
+        <h3 className="text-xl">Pages: </h3>
+        <Pagination
+          total={npages}
+          variant="bordered"
+          initialPage={1}
+          onChange={setCurrentPage}
+          siblings={4}
+          showControls={true}
+          classNames={{
+            base: "mt-2 w-fit",
+            wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
+            item: "w-8 h-8 text-small rounded-none bg-transparent",
+            cursor: "hidden",
+            prev: "hidden",
+            next: "hidden",
+          }}
+        />
+      </div>
     </div>
   );
 };
