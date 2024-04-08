@@ -161,7 +161,7 @@ const DataLoad = () => {
           value={qty}
           name="quantity"
           id="qtyInput"
-          className="w-40 ml-2 text-center dark:bg-white dark:text-slate-800 rounded-sm"
+          className="w-40 ml-2 text-center bg-slate-800 text-white dark:bg-white dark:text-slate-800 rounded-md"
           onChange={handleQty}
         />
       </div>
@@ -173,7 +173,7 @@ const DataLoad = () => {
           name="searchCurrencyType"
           onChange={handleSearch}
           placeholder="abbrev. only"
-          className="w-40 ml-2 text-center dark:bg-white dark:text-slate-800 rounded-sm"
+          className="w-40 ml-2 text-center bg-slate-800 text-white dark:bg-white dark:text-slate-800 rounded-md"
         />
       </div>
       <h2 className="text-3xl font-bold text-center mb-6">
