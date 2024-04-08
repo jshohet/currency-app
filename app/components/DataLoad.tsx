@@ -209,7 +209,7 @@ const DataLoad = () => {
           variant="bordered"
           initialPage={1}
           onChange={setCurrentPage}
-          siblings={4}
+          siblings={1}
           showControls={true}
           classNames={{
             base: "mt-2 w-fit",
